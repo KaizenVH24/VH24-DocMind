@@ -1,6 +1,6 @@
 from app.vector_store import VectorStore
 from app.ollama_client import ask_ollama
-
+from app.ollama_client import ask_model
 
 class RAGEngine:
     def __init__(self):

@@ -113,6 +113,8 @@ Ask questions from your documents - powered by VH24 AI (Ollama + RAG)
 </p>
 """, unsafe_allow_html=True)
 
+st.warning("Warning! Running in demo mode (LLM disabled in cloud)")
+
 # -------------------------
 # Init
 # -------------------------
