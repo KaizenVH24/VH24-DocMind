@@ -1,0 +1,205 @@
+# The Data Science Project Lifecycle
+
+## Overview
+
+A data science project is not just about building a model. It is an end-to-end process that spans problem definition, data collection, experimentation, deployment, and monitoring. Understanding the full lifecycle is essential for any practitioner.
+
+---
+
+## Phase 1: Problem Definition
+
+Before writing a single line of code, you must clearly define the business problem.
+
+Key questions to answer:
+- What decision will this model inform?
+- What does success look like (metric)?
+- What is the baseline performance (rule-based system, human, random)?
+- What data is available, and what are its limitations?
+- What are the constraints (latency, interpretability, fairness)?
+
+A poorly defined problem is the most common reason data science projects fail. Spend more time here than you think is necessary.
+
+---
+
+## Phase 2: Data Collection and Storage
+
+Data is the fuel of machine learning. Common sources include:
+- **Relational databases** (PostgreSQL, MySQL, SQLite)
+- **Data warehouses** (BigQuery, Snowflake, Redshift)
+- **Data lakes** (S3, Azure Data Lake)
+- **APIs** (REST, GraphQL, streaming)
+- **Web scraping** (BeautifulSoup, Scrapy)
+- **Public datasets** (Kaggle, UCI ML Repository, Hugging Face Datasets)
+
+Best practices for data collection:
+1. Document data sources and collection timestamps.
+2. Maintain raw data immutability — never overwrite raw files.
+3. Version your datasets alongside your code (DVC, Delta Lake).
+4. Understand data licensing and compliance requirements.
+
+---
+
+## Phase 3: Exploratory Data Analysis (EDA)
+
+EDA is the process of examining and visualising data to summarise its main characteristics. Goals:
+- Understand distributions, outliers, and missing values.
+- Identify correlations between features and the target.
+- Discover data quality issues before they corrupt models.
+- Generate hypotheses for feature engineering.
+
+Essential EDA steps:
+1. `df.shape`, `df.dtypes`, `df.describe()` for quick overview.
+2. Missing value analysis: heatmaps, percentage missing per column.
+3. Distribution plots: histograms, box plots, violin plots.
+4. Correlation matrix: identify multicollinearity.
+5. Target variable analysis: class imbalance check for classification.
+
+Tools: Pandas, Seaborn, Matplotlib, Plotly, ydata-profiling (formerly pandas-profiling), Sweetviz.
+
+---
+
+## Phase 4: Data Preprocessing
+
+Raw data is never model-ready. Preprocessing steps include:
+
+**Handling Missing Values**
+- Drop rows/columns with excessive missingness (>50%).
+- Impute numerics with mean, median, or model-based imputation (KNN, MICE).
+- Impute categoricals with mode or a dedicated "Unknown" category.
+
+**Feature Encoding**
+- One-hot encoding for nominal categoricals.
+- Ordinal encoding for ordered categoricals.
+- Target encoding for high-cardinality categoricals.
+
+**Scaling and Normalisation**
+- StandardScaler: zero mean, unit variance (best for linear models, SVMs).
+- MinMaxScaler: scales to [0, 1] (best for neural networks).
+- RobustScaler: uses IQR, resistant to outliers.
+
+**Outlier Treatment**
+- IQR-based capping (Winsorization).
+- Z-score filtering (|z| > 3).
+- Isolation Forest for unsupervised anomaly removal.
+
+**Train-Test Split**
+Always split data before applying any transformations to prevent data leakage. Use stratified splits for imbalanced classification problems.
+
+---
+
+## Phase 5: Feature Engineering
+
+Feature engineering is often the highest-leverage activity in a data science project.
+
+Techniques:
+- **Polynomial features**: capture non-linear relationships.
+- **Interaction features**: multiply two features together.
+- **Datetime decomposition**: extract hour, day, month, weekday from timestamps.
+- **Lag features**: for time series, include previous timestep values.
+- **Text features**: TF-IDF, word embeddings, sentence embeddings.
+- **Aggregations**: group-by statistics (mean, std, count) for entity-level features.
+
+Feature selection methods:
+- Correlation-based filtering (remove high VIF features).
+- Recursive Feature Elimination (RFE).
+- LASSO regularisation (L1 shrinks unimportant feature weights to zero).
+- SHAP values (identify features with high model impact).
+
+---
+
+## Phase 6: Model Training and Selection
+
+Start simple. A well-tuned logistic regression often outperforms a poorly tuned deep learning model.
+
+Suggested model progression:
+1. **Baseline**: Majority class predictor / mean predictor.
+2. **Linear models**: Logistic Regression, Ridge, Lasso.
+3. **Tree-based**: Decision Tree, Random Forest, Gradient Boosting (XGBoost, LightGBM, CatBoost).
+4. **Neural networks**: Only when tabular tree-based models are insufficient.
+
+Hyperparameter tuning strategies:
+- Grid Search: exhaustive but expensive.
+- Random Search: efficient for high-dimensional spaces.
+- Bayesian Optimisation (Optuna, Hyperopt): most efficient.
+
+---
+
+## Phase 7: Model Evaluation and Validation
+
+A model that performs well in training but poorly in production is useless. Rigorous evaluation is non-negotiable.
+
+**Cross-Validation**
+Use k-fold (k=5 or 10) for small datasets. Use time-series aware split (TimeSeriesSplit) for temporal data.
+
+**Evaluation Metrics**
+Choose metrics aligned with business goals:
+- Imbalanced classes: prioritise F1, AUC-ROC, Precision@K.
+- Medical diagnosis: prioritise Recall (minimise false negatives).
+- Fraud detection: balance Precision and Recall via F-beta score.
+
+**Model Interpretability**
+- SHAP (SHapley Additive exPlanations): gold standard for local and global feature importance.
+- LIME: local perturbation-based explanations.
+- Partial Dependence Plots (PDPs): show marginal effect of a feature.
+
+---
+
+## Phase 8: Deployment
+
+A model is only valuable when it generates predictions for real users or systems.
+
+Deployment options:
+- **REST API** (FastAPI, Flask): expose model as a microservice.
+- **Batch scoring**: schedule daily/weekly prediction jobs.
+- **Edge deployment**: export to ONNX, TensorFlow Lite for on-device inference.
+- **Streaming inference**: integrate with Kafka/Spark for real-time pipelines.
+
+Packaging and serving:
+1. Serialise model with joblib or pickle (scikit-learn) / torch.save (PyTorch).
+2. Containerise with Docker for reproducible environments.
+3. Orchestrate with Kubernetes for scalable serving.
+4. Use platforms: MLflow Models, BentoML, Seldon Core, or cloud ML services.
+
+---
+
+## Phase 9: Monitoring and Maintenance
+
+Models degrade over time due to data drift and concept drift.
+
+Key monitoring signals:
+- **Data drift**: distribution of input features changes from training.
+- **Concept drift**: the relationship between features and target changes.
+- **Prediction drift**: distribution of model outputs shifts.
+- **Business metric degradation**: conversion rate drops, churn rate increases.
+
+Monitoring tools: EvidentlyAI, Whylogs, Grafana dashboards with Prometheus, custom alerting.
+
+Mitigation strategies:
+- Scheduled retraining pipelines.
+- Champion-challenger model deployments (A/B testing).
+- Automated drift alerts with human-in-the-loop review.
+
+---
+
+## Common Failure Modes
+
+1. **Data leakage**: including future information in training features.
+2. **Label leakage**: target variable proxies leaking into features.
+3. **Train-test contamination**: preprocessing before splitting.
+4. **Distribution shift**: model deployed in a different context than trained.
+5. **p-hacking**: running many experiments and picking the best result on test data.
+6. **Ignoring business constraints**: a technically good model that cannot be deployed.
+
+---
+
+## Recommended Tools by Phase
+
+| Phase | Tools |
+|-------|-------|
+| EDA | Pandas, Seaborn, Plotly, ydata-profiling |
+| Preprocessing | Scikit-learn, FeatureTools |
+| Modelling | Scikit-learn, XGBoost, LightGBM, PyTorch |
+| Experiment Tracking | MLflow, Weights & Biases, Neptune |
+| Deployment | FastAPI, Docker, MLflow Models, BentoML |
+| Monitoring | EvidentlyAI, Grafana |
+| Orchestration | Apache Airflow, Prefect, Dagster |
