@@ -46,6 +46,6 @@ Answer:
         prompt = self.build_prompt(question, results)
 
         # Step 3: call LLM
-        answer = ask_ollama(prompt)
+        answer = ask_model(prompt)
 
         return answer
