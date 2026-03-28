@@ -137,6 +137,35 @@ Since cloud environments do not support local Ollama instances, the deployed ver
 
 ---
 
+## Testing
+
+The system was tested using a mix of factual, analytical, and out-of-context queries to evaluate retrieval quality and response accuracy.
+
+## Sample Queries
+
+* What are the types of machine learning?
+* Explain the data science lifecycle
+* What is Retrieval-Augmented Generation (RAG)?
+* What are common failure modes in machine learning projects?
+
+
+## Expected Behaviour
+
+- Answers should be grounded in uploaded documents
+- Responses should not rely on external knowledge
+- Irrelevant questions should return a fallback message
+- Retrieved context should align with the final answer
+
+
+## Observations
+
+* The model performs well on structured and factual queries
+* Slight summarisation may occur when multiple chunks are retrieved
+* Response quality depends on chunk size and overlap configuration
+
+---
+
+
 ## Author
 
 Vinay Hulsurkar aka VH24
