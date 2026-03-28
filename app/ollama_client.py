@@ -21,5 +21,5 @@ def ask_ollama(prompt):
 
 
 def ask_api(prompt):
-    # temporary fallback (you can upgrade later)
+    # temporary fallback (can upgrade later)
     return "Demo mode: Model not available in cloud deployment."
