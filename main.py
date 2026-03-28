@@ -7,18 +7,16 @@ from app.vector_store import VectorStore
 from app.rag_engine import RAGEngine
 
 
-# -------------------------
+
 # Page config
-# -------------------------
 st.set_page_config(
     page_title="VH24-DocMind",
     layout="wide"
 )
 
 
-# -------------------------
-# Custom styling (your theme)
-# -------------------------
+
+# Custom styling 
 st.markdown("""
 <style>
 
@@ -96,9 +94,8 @@ body {
 """, unsafe_allow_html=True)
 
 
-# -------------------------
+
 # Title
-# -------------------------
 st.markdown('<div class="title">VH24-DocMind</div>', unsafe_allow_html=True)
 
 st.markdown("""
@@ -115,9 +112,8 @@ Ask questions from your documents - powered by VH24 AI (Ollama + RAG)
 
 st.warning("Warning! Running in demo mode (LLM disabled in cloud)")
 
-# -------------------------
+
 # Init
-# -------------------------
 if "vs" not in st.session_state:
     st.session_state.vs = VectorStore()
 
@@ -125,9 +121,8 @@ if "rag" not in st.session_state:
     st.session_state.rag = RAGEngine()
 
 
-# -------------------------
+
 # Sidebar - Upload
-# -------------------------
 st.sidebar.header("Upload Documents")
 
 uploaded_file = st.sidebar.file_uploader(
@@ -152,9 +147,8 @@ if uploaded_file:
     st.sidebar.success("Indexed successfully")
 
 
-# -------------------------
+
 # Clear DB
-# -------------------------
 if st.sidebar.button("🗑 Clear Database"):
     if os.path.exists("db"):
         shutil.rmtree("db")
@@ -162,9 +156,8 @@ if st.sidebar.button("🗑 Clear Database"):
     st.sidebar.success("Database cleared")
 
 
-# -------------------------
+
 # Main Input
-# -------------------------
 question = st.text_input("Ask something about your document:")
 
 if question:
@@ -173,7 +166,7 @@ if question:
         unsafe_allow_html=True
     )
 
-    with st.spinner("VH24-DocMind Thinking..."):
+    with st.spinner("VH24-DocMind is Thinking..."):
         answer = st.session_state.rag.ask(question)
 
     st.markdown(
@@ -182,6 +175,7 @@ if question:
     )
 
 
+# Footer
 st.markdown(
     """
 <div class="footer">
